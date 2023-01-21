@@ -59,6 +59,7 @@ class GetTransactionDetails extends Component {
                 account: accounts[0],
                 contract: instance
             });
+            console.log(this.state.contract.address+' passed 1')
         }
     }
 

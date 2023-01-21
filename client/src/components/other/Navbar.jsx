@@ -7,7 +7,7 @@ class Navbar extends Component {
         return (
             <div className="navbar">
                 <nav className="navbar navbar-expand-lg navbar-dark">
-                    <a className="navbar-brand" href="/">Prizma</a>
+                    <a className="navbar-brand" href="/">AptOne</a>
                     <button
                         className="navbar-toggler"
                         type="button"
@@ -23,18 +23,27 @@ class Navbar extends Component {
                             <li className="nav-item">
                                 <Link to="/" className="nav-link">Home</Link>
                             </li>
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                                 <Link to="/how-it-works" className="nav-link">How It Works</Link>
+                            </li> */}
+                            <li className="nav-item">
+                                <Link to="/register" className="nav-link">Institute</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/add-certificate" className="nav-link">Add Certificate</Link>
+                                <Link to="/register1" className="nav-link">Student</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/view-certificate" className="nav-link">View Certificate</Link>
+                                <Link to="/register2" className="nav-link">Verify</Link>
+                            </li>
+                            {/* <li className="nav-item">
+                                <Link to="/add-certificate" className="nav-link">Institute</Link>
                             </li>
                             <li className="nav-item">
+                                <Link to="/view-certificate" className="nav-link">Student</Link>
+                            </li> */}
+                            {/* <li className="nav-item">
                                 <Link to="/get-transaction-details" className="nav-link">Get Transaction Details</Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                 </nav>

@@ -1,5 +1,7 @@
 pragma solidity >=0.5.0;
 
+import "hardhat-console/contracts/console.sol";
+
 contract Certificate {
 
     /** Struct */
@@ -7,6 +9,8 @@ contract Certificate {
     struct Cert {
         string userName;
         string id;
+        // string blockid;
+        string cgpa;
         string courseName;
         string issuingAuthority;
         uint256 issueDate;
@@ -20,17 +24,17 @@ contract Certificate {
     /** Mapping for certificates */
     mapping (address => mapping(string => Cert)) public certificates;
 
-
     /** Public functions */
 
     function addCertificate(
         string memory _userName,
         string memory _id,
+        string memory _cgpa,
         string memory _courseName,
         string memory _issuingAuthority,
         uint256 _issueDate,
         address _user
-    ) public {
+    ) public{
         require(
             certificates[_user][_id].isAdded == false,
             "Certificate must not be already added."
@@ -44,6 +48,8 @@ contract Certificate {
         Cert memory cert = Cert({
             userName: _userName,
             id: _id,
+            // blockid: '',
+            cgpa: _cgpa,
             courseName: _courseName,
             issuingAuthority: _issuingAuthority,
             issueDate: _issueDate,
@@ -52,12 +58,19 @@ contract Certificate {
         });
 
         certificates[_user][_id] = cert;
+        // certificates[_to][_id]=cert;
     }
 
+    // function addblockid(string memory _blockid,address _user, string memory _id) internal{
+  
+    //       certificates[_user][_id].blockid=_blockid;
+    // }
+
     function getCertificate(address _user, string memory _id)
-        public
+        public 
         view
-        returns(string memory, string memory, string memory, uint256) {
+        returns(string memory, string memory, string memory,string memory,uint256) {
+            console.log("In here");
             require(
                 _user != address(0),
                 "User address must not be empty"
@@ -66,12 +79,13 @@ contract Certificate {
                 bytes(_id).length != 0,
                 "Certificate id must not be empty."
             );
-
+            Cert memory cert=certificates[_user][_id];
             return (
-                certificates[_user][_id].userName,
-                certificates[_user][_id].issuingAuthority,
-                certificates[_user][_id].courseName,
-                certificates[_user][_id].issueDate
+                cert.userName,
+                cert.cgpa,
+                cert.issuingAuthority,
+                cert.courseName,
+                cert.issueDate
             );
-    }
+}
 }

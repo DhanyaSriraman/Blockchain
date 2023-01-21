@@ -5,6 +5,7 @@ import BeatLoader from 'react-spinners/BeatLoader'
 class Loader extends Component {
 
     render () {
+        console.log('inside render')
         return (
             <LoadingOverlay
                 active={ true }

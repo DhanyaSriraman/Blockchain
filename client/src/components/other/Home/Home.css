@@ -1,5 +1,5 @@
 @font-face {
-    font-family: Allerta;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     src: url('../../../assets/fonts/Allerta/Allerta-Regular.ttf') format("opentype");
 }
 
@@ -15,7 +15,7 @@
 
 .head-title {
     margin-top: 100px;
-    margin-bottom: 100px;
+    margin-bottom: 50px;
 }
 
 .introduction {
@@ -33,10 +33,11 @@
 
 .introduction-text {
     font-weight: 500;
-    padding-top: 70px;
+    padding-top: 10px;
     padding-left: 80px;
     padding-right: 50px;
     text-align: left;
+   
 }
 
 h1 {
@@ -73,4 +74,12 @@ p {
 .section-3 {
     margin-top: 150px;
     margin-bottom: 150px;
+}
+.para{
+    margin-left: 8%;
+    width: 150%;
+}
+
+.image{
+    margin-top: 0px;
 }

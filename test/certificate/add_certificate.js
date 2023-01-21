@@ -31,7 +31,7 @@ contract('Certificate::addCertificate', async (accounts) => {
         param.user,
         { from: param.user },
       );
-
+      console.log('inside func')
       const certificateDetails = await certificate.certificates.call(param.user, param.id);
 
       assert.strictEqual(

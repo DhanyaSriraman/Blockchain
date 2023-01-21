@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import web3 from '../../../getWeb3';
 // import CertificateContract from '../../../contracts/Certificate.json';
 import FailedBlockchain from '../../other/error/failed/Failed';
-import CertificateContract from '../../../contracts/Contract.json';
+import CertificateContract from '../../../contracts/Certificate.json';
 import Loader from '../../other/loader/Loader';
 
 import './AddCertificate.css';
@@ -18,6 +18,8 @@ class AddCertificate extends Component {
             fname: '',
             lname: '',
             certificateId: '',
+            blockId:'',
+            cgpa :'',
             courseName: '',
             issuingAuthority: '',
             issueDate: '',
@@ -33,10 +35,12 @@ class AddCertificate extends Component {
     }
 
     componentDidMount() {
+        console.log("Inside addCertificate")
         this.loadBlockchain();
     }
 
     async loadBlockchain() {
+        console.log("Inside loadBlockcahin")
         const givenProvider = await web3.givenProvider;
         console.log('web3  ::::', web3);
 
@@ -45,18 +49,24 @@ class AddCertificate extends Component {
                 isConnected: true,
             });
         }
+        console.log("passed 1")
 
         if(this.state.isConnected) {
+            await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
+           
+           // const accounts = await web3.eth.requestAccounts();
 
             if(accounts === undefined) {
                 this.setState({
                     isFailed: true
                 });
             }
+            console.log(accounts);
             console.log('metamask account :-', accounts[0]);
             await web3.eth.accounts.wallet.add(accounts[0]);
 
+            console.log("passed 2")
             // const networkId = await web3.eth.net.getId();
             // const deployedNetwork = CertificateContract.networks[networkId];
             // const instance = new web3.eth.Contract(
@@ -64,9 +74,11 @@ class AddCertificate extends Component {
             //     deployedNetwork && deployedNetwork.address,
             // );
 
+            const networkId = await web3.eth.net.getId();
+            const deployedNetwork = CertificateContract.networks[networkId];
             const instance = new web3.eth.Contract(
                 CertificateContract.abi,
-                CertificateContract.address,
+                deployedNetwork.address
             );
 
             this.setState({
@@ -74,6 +86,7 @@ class AddCertificate extends Component {
                 account: accounts[0],
                 contract: instance
             });
+            console.log(this.state.contract.address+' passed 1')
         }
     }
 
@@ -95,6 +108,7 @@ class AddCertificate extends Component {
         const addCertificateParams = {
             userName: this.state.fname + ' ' + this.state.lname,
             id: this.state.certificateId,
+            cgpa : this.state.cgpa,
             courseName: this.state.courseName,
             issuingAuthority: this.state.issuingAuthority,
             issueDate: Date.parse(this.state.issueDate),
@@ -102,18 +116,31 @@ class AddCertificate extends Component {
         }
 
         console.log('add cert params :-', addCertificateParams);
+        console.log(contract)
+        
+    
         const txReceipt = await contract.methods.addCertificate(
             addCertificateParams.userName,
             addCertificateParams.id,
+            addCertificateParams.cgpa,
             addCertificateParams.courseName,
             addCertificateParams.issuingAuthority,
             addCertificateParams.issueDate,
             addCertificateParams.accountAddress
         ).send({
             from: this.state.account,
+            to : '0x32c0AFD94C4ECb046b85e790b0F359f8A45D4895',
             gas: GAS_LIMIT
-         });
-
+        }).then({
+           return  : web3.eth.getTransactionReceipt(function(err, rec){
+                if (rec) {
+                  console.log(`${rec.transactionHash}`);
+                } else {
+                  console.log(err);
+                }})
+        });
+        
+        console.log('passed 3');
         console.log('tx receipt :-', JSON.stringify(txReceipt));
 
         const receiptData = {
@@ -134,7 +161,19 @@ class AddCertificate extends Component {
         this.setState({
             isLoading: false,
         });
-    }
+        this.state.blockId=receiptData.blockNumber;
+        // await contract.methods.addblockid(this.state.blockId,addCertificateParams.accountAddress,addCertificateParams.id).then(function(res,err){
+        //     if(err){
+        //         console.log("err occured");
+        //     }
+        // })
+}
+
+        // ).send({
+        //     from: this.state.account,
+        //     gas: GAS_LIMIT
+        //  }).then(receipt=> {console.log(receipt+' hey')});
+
 
     render () {
         if(!this.state.isConnected) {
@@ -152,19 +191,19 @@ class AddCertificate extends Component {
         else {
             return (
                 <div>
-                    <div className="account-address">
+                    {/* <div className="account-address">
                         <dl className="dl-horizontal row">
                             <dt className="col-5">Ethereum Account Address: </dt>
                             <dd className="col-7">{this.state.account}</dd>
                         </dl>
-                    </div>
+                    </div> */}
                     <div className="form-title">
-                        <h1>Certificate Details</h1>
+                        <h1>Issue Certificate</h1>
                     </div>
-                        <p>Wait for at least 15 seconds after submitting the details.</p>
+                        {/* <p>Wait for at least 15 seconds after submitting the details.</p> */}
                     <form className="form">
                         <div className="form-group row">
-                            <label htmlFor="fname" className="col-sm-4 col-form-label">Enter First Name: </label>
+                            <label htmlFor="fname" className="col-sm-4 col-form-label">Candidate First Name: </label>
                             <div className="col-sm-6">
                                 <input
                                     type="text"
@@ -176,7 +215,7 @@ class AddCertificate extends Component {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="lname" className="col-sm-4 col-form-label">Enter Last Name: </label>
+                            <label htmlFor="lname" className="col-sm-4 col-form-label">Candidate Last Name: </label>
                             <div className="col-sm-6">
                                 <input
                                     type="text"
@@ -208,12 +247,12 @@ class AddCertificate extends Component {
                                     name="courseName"
                                     value={this.state.courseName}
                                     onChange={this.handleChange}
-                                    placeholder="e.g. Computer Security"
+                                    placeholder="e.g. Computer Science"
                                 />
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="issuingAuthority" className="col-sm-4 col-form-label">Issuing Authority: </label>
+                            <label htmlFor="issuingAuthority" className="col-sm-4 col-form-label">Institute name: </label>
                             <div className="col-sm-6">
                                 <input
                                     type="text"
@@ -221,7 +260,7 @@ class AddCertificate extends Component {
                                     name="issuingAuthority"
                                     value={this.state.issuingAuthority}
                                     onChange={this.handleChange}
-                                    placeholder="e.g. Offensive Security"
+                                    placeholder="e.g. MIT"
                                 />
                             </div>
                         </div>
@@ -237,13 +276,26 @@ class AddCertificate extends Component {
                                 />
                             </div>
                         </div><br />
-                        <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Submit Certificate</button>
+                        <div className="form-group row">
+                            <label htmlFor="cgpa" className="col-sm-4 col-form-label">Enter Cgpa: </label>
+                            <div className="col-sm-6">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="cgpa"
+                                    value={this.state.cgpa}
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                        </div><br />
+                       
+                        <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Issue Certificate</button>
                     </form>
                     <div>
                         {this.state.isReceiptGenerated ?
                             <div className="receipt">
                                 <h1 className="table-title">Transaction Receipt</h1>
-                                <table>
+                                <table class="tab">
                                     <tbody>
                                         <tr>
                                             <td>Transaction Hash </td>
@@ -258,17 +310,17 @@ class AddCertificate extends Component {
                                             <td>{this.state.receipt.blockNumber}</td>
                                         </tr>
                                         <tr>
-                                            <td>From Account</td>
+                                            <td>Account</td>
                                             <td>{this.state.receipt.from}</td>
                                         </tr>
-                                        <tr>
+                                        {/* <tr>
                                             <td>To Account</td>
                                             <td>{this.state.receipt.to}</td>
-                                        </tr>
-                                        <tr>
+                                        </tr> */}
+                                        {/* <tr>
                                             <td>Gas Used</td>
                                             <td>{this.state.receipt.gasUsed}</td>
-                                        </tr>
+                                        </tr> */}
                                     </tbody>
                                 </table>
                             </div>

@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
+    "ethereum-input-data-decoder": "^0.4.2",
+    "ethers": "^4.0.0-beta.3",
+    "hardhat-console": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.8.0",
+    "multer": "^1.4.5-lts.1",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-loading-overlay": "^1.0.1",
@@ -12,12 +21,15 @@
     "react-spinners": "^0.8.3",
     "reactjs-popup": "^1.5.0",
     "reactstrap": "^8.4.1",
+    "sha3": "^2.1.4",
+    "sweetalert": "^2.1.2",
     "web3": "1.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "devStart": "nodemon server.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

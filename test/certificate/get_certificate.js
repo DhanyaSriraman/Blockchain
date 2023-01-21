@@ -42,6 +42,7 @@ contract('Certificate::addCertificate', async (accounts) => {
         param.userName,
         `User name doesn't match.`,
       );
+      
     });
   });
 });
